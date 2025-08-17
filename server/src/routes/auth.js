@@ -72,7 +72,7 @@ router.post("/forgot-password", async (req, res) => {
     user.resetPasswordExpiresAt = expires;
     await user.save();
     const base = process.env.FRONTEND_ORIGIN || "http://localhost:5173";
-    const resetUrl = `${base}/reset-password?token=${rawToken}&email=${encodeURIComponent(
+    const resetUrl = `${base}reset-password?token=${rawToken}&email=${encodeURIComponent(
       email
     )}`;
     await sendPasswordResetEmail({ to: email, resetUrl });
