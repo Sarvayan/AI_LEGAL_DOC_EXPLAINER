@@ -14,7 +14,7 @@ dotenv.config({ path: path.resolve("../.env") });
 const app = express();
 const PORT = 8080 || 5000;
 
-const allowedOrigin = ["http://localhost:5174", "http://localhost:5173"];
+const allowedOrigin = ["http://localhost:5173", "http://localhost:5174"];
 app.use(cors({ origin: allowedOrigin, credentials: true }));
 app.use(helmet());
 app.use(express.json({ limit: "2mb" }));
