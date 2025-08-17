@@ -1,0 +1,16 @@
+@'
+services:
+  - type: web
+    name: ai-legal-doc-explainer-api
+    env: node
+    plan: free
+    rootDir: server
+    buildCommand: npm ci
+    startCommand: node src/index.js
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: 18
+      - key: OPENAI_API_KEY
+        sync: false   # set in dashboard after first deploy
+'@ | Set-Content -Path render.yaml

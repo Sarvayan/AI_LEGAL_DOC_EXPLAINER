@@ -7,19 +7,35 @@ import { connectDB } from "./db.js";
 import authRoutes from "./routes/auth.js";
 import documentRoutes from "./routes/documents.js";
 import aiRoutes from "./routes/ai.js";
-import path from "path";
 
-dotenv.config({ path: path.resolve("../.env") });
+dotenv.config();
 
 const app = express();
-const PORT = 8080 || 5000;
+const PORT = process.env.PORT || 8080;
 
-const allowedOrigin = ["http://localhost:5173", "http://localhost:5174"];
-app.use(cors({ origin: allowedOrigin, credentials: true }));
+// CORS (allow Netlify + local dev)
+const allowedOrigins = [
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "https://YOUR-NETLIFY-SITE.netlify.app",
+];
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
+
 app.use(helmet());
 app.use(express.json({ limit: "2mb" }));
 
-// Basic rate limiting
+// Rate limiting
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 100,
@@ -27,6 +43,7 @@ const authLimiter = rateLimit({
 });
 app.use("/api/auth", authLimiter);
 
+// Health check
 app.get("/", (_req, res) =>
   res.json({ ok: true, message: "AI Legal Doc Explainer API" })
 );
@@ -39,7 +56,9 @@ app.use("/api/ai", aiRoutes);
 // DB + start
 connectDB()
   .then(() => {
-    app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+    app.listen(PORT, "0.0.0.0", () =>
+      console.log(`Server running on port ${PORT}`)
+    );
   })
   .catch((err) => {
     console.error("Failed to start server:", err);
