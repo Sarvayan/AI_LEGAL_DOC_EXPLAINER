@@ -17,7 +17,7 @@ const PORT = process.env.PORT || 8080;
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:5174",
-  "https://YOUR-NETLIFY-SITE.netlify.app",
+  "https://ai-legal-doc-explainer.onrender.com/",
 ];
 app.use(
   cors({
