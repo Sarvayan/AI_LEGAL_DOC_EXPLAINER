@@ -245,9 +245,6 @@ export default function Dashboard() {
             </div>
           </div>
           <div style={styles.headerActions}>
-            <button style={styles.backBtn} onClick={() => navigate(-1)}>
-              ← Back
-            </button>
             <RefreshButton onClick={load} />
           </div>
         </div>
