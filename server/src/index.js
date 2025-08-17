@@ -13,24 +13,38 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-// CORS (allow Netlify + local dev)
-const allowedOrigins = [
+// --- CORS ---
+const allowedOrigins = new Set([
   "http://localhost:5173",
   "http://localhost:5174",
-  "https://ai-legal-doc-explainer.onrender.com/",
-];
+  // Deployed frontend:
+  "https://ai-legal-doc-explainer-client-side.onrender.com",
+  // If you have another client, add it here exactly:
+  // "https://ai-legal-doc-explainer-client.onrender.com",
+]);
+
+app.use((req, res, next) => {
+  // helpful during debugging
+  // console.log("Origin:", req.headers.origin, "Path:", req.path, "Method:", req.method);
+  next();
+});
+
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
+      // Allow non-browser requests (no Origin header) like curl/Postman
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.has(origin)) return callback(null, true);
+      return callback(new Error(`Not allowed by CORS: ${origin}`));
     },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
+// Ensure preflight is handled
+app.options("*", cors());
 
 app.use(helmet());
 app.use(express.json({ limit: "2mb" }));
