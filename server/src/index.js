@@ -18,7 +18,7 @@ const allowedOrigins = new Set([
   "http://localhost:5173",
   "http://localhost:5174",
   // Deployed frontend:
-  "https://ai-legal-doc-explainer-client-side.onrender.com",
+  "https://ai-legal-doc-explainer-frontend.onrender.com",
   // If you have another client, add it here exactly:
   // "https://ai-legal-doc-explainer-client.onrender.com",
 ]);
